@@ -7,7 +7,8 @@ export class BootScene extends Phaser.Scene {
   create() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('scene') === 'game') {
-      this.scene.start('Game', { level: 1, score: 0, lives: 3, fuel: 999 });
+      const level = parseInt(params.get('level') ?? '1', 10) || 1;
+      this.scene.start('Game', { level, score: 0, lives: 3, fuel: 999 });
     } else {
       this.scene.start('Title');
     }

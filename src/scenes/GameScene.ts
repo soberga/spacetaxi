@@ -105,6 +105,15 @@ export class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.thrustKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    // 1–6 jump directly to that level (dev shortcut)
+    const KC = Phaser.Input.Keyboard.KeyCodes;
+    [KC.ONE, KC.TWO, KC.THREE, KC.FOUR, KC.FIVE, KC.SIX].forEach((code, i) => {
+      this.input.keyboard!.addKey(code).on('down', () => {
+        this.sfx.stopThrust();
+        this.scene.start('Game', { level: i + 1, score: 0, lives: 3, fuel: 999 });
+      });
+    });
+
     // HUD
     this.createHud();
 

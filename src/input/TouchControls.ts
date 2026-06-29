@@ -10,9 +10,9 @@ const ALPHA = 0.40;
 export class TouchControls {
   readonly input: VirtualInput = { left: false, right: false, thrust: false };
 
-  private readonly leftRect   = new Phaser.Geom.Rectangle(4,                      BTN_Y, BTN_W, BTN_H);
-  private readonly thrustRect = new Phaser.Geom.Rectangle(SCREEN_W / 2 - BTN_W / 2, BTN_Y, BTN_W, BTN_H);
-  private readonly rightRect  = new Phaser.Geom.Rectangle(SCREEN_W - BTN_W - 4,   BTN_Y, BTN_W, BTN_H);
+  private readonly leftRect   = new Phaser.Geom.Rectangle(4,             BTN_Y, BTN_W, BTN_H);
+  private readonly rightRect  = new Phaser.Geom.Rectangle(4 + BTN_W + 4, BTN_Y, BTN_W, BTN_H);
+  private readonly thrustRect = new Phaser.Geom.Rectangle(SCREEN_W - BTN_W - 4, BTN_Y, BTN_W, BTN_H);
 
   private gfx: Phaser.GameObjects.Graphics;
   private labelLeft!: Phaser.GameObjects.Text;
@@ -29,8 +29,8 @@ export class TouchControls {
         .setOrigin(0.5).setDepth(51).setAlpha(0.85);
 
     this.labelLeft   = mk('◄', this.leftRect);
-    this.labelThrust = mk('▲', this.thrustRect);
     this.labelRight  = mk('►', this.rightRect);
+    this.labelThrust = mk('▲', this.thrustRect);
   }
 
   private drawButtons() {

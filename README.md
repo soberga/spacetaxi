@@ -2,11 +2,9 @@
 
 A browser-based recreation of the 1984 Commodore 64 game by Muse Software.
 
-> Entirely written by [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) via [Claude Code](https://claude.ai/code) — including all game logic, physics, level design, and sound. Only minor map adjustments was written by hand.
+> Entirely written by [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) via [Claude Code](https://claude.ai/code) — including all game logic, physics, level design, and sound. Only minor map adjustments and bugfixes was written by hand.
 
 ## Play
-
-Open `dist/index.html` in any modern browser — no server required.
 
 To build from source:
 
@@ -15,6 +13,8 @@ npm install
 npm run build   # produces dist/index.html
 npm run dev     # dev server at http://localhost:5173
 ```
+
+Open `dist/index.html` in any modern browser — no server required.
 
 ## Controls
 

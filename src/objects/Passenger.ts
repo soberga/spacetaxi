@@ -15,7 +15,7 @@ export class Passenger {
 
   constructor(scene: Phaser.Scene, state: PassengerState) {
     this.state = state;
-    this.calloutText = state.destPad === 'H' ? 'Hey pad!' : `Pad ${state.destPad}!`;
+    this.calloutText = state.destPad === 'H' ? 'Home pad!' : `Pad ${state.destPad}!`;
 
     this.gfx = scene.add.graphics();
     this.label = scene.add.text(0, 0, '', {

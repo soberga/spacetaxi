@@ -21,6 +21,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   input: {
     keyboard: { target: window },
+    activePointers: 3,
   },
   parent: document.body,
 };

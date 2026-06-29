@@ -88,7 +88,9 @@ export class GameScene extends Phaser.Scene {
       FUEL_MAX,
     );
     this.taxi.sprite.setDepth(5);
-    this.taxi.isLanded = true; // start on the H pad
+    // Start landed on the H pad
+    this.taxi.isLanded = true;
+    this.landedPadId = 'H';
 
     // Spawn passengers
     this.spawnPassengers();
@@ -393,13 +395,13 @@ export class GameScene extends Phaser.Scene {
     // Taxi physics
     this.taxi.update(dt, this.cursors, this.thrustKey);
 
-    // Check lift-off (any thrust key released while landed)
+    // Lift off only on a fresh UP/SPACE press — not a held key from braking
     if (this.taxi.isLanded) {
-      const liftOff = this.cursors.up.isDown || this.thrustKey.isDown ||
-                      this.cursors.left.isDown || this.cursors.right.isDown;
+      const K = Phaser.Input.Keyboard;
+      const liftOff = K.JustDown(this.cursors.up) || K.JustDown(this.thrustKey);
       if (liftOff) {
         this.taxi.isLanded = false;
-        this.taxi.vy = -15; // kick upward so taxi clears the pad surface immediately
+        this.taxi.vy = -15;
         this.landedPadId = null;
         this.hideCallout();
       }

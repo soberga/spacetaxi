@@ -2,7 +2,7 @@
 
 A browser-based recreation of the 1984 Commodore 64 game by Muse Software.
 
-> Entirely written by [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) via [Claude Code](https://claude.ai/code) — including all game logic, physics, level design, and sound. No code was written by hand.
+> Entirely written by [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) via [Claude Code](https://claude.ai/code) — including all game logic, physics, level design, and sound. Only minor map adjustments was written by hand.
 
 ## Play
 

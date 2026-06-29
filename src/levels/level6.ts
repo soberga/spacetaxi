@@ -31,6 +31,7 @@ const level6: LevelDefinition = {
   passengers: [
     { padId: '4', destPadId: '7' },
     { padId: '6', destPadId: 'H' },
+    { padId: '2', destPadId: '8' },
   ],
 };
 

@@ -3,6 +3,7 @@ import { C64, TILE, SCREEN_W, SCREEN_H, FUEL_MAX, SCORE_PICKUP, SCORE_DELIVERY_B
 import { LEVELS } from '../levels/LevelData.ts';
 import { Taxi } from '../objects/Taxi.ts';
 import { Passenger } from '../objects/Passenger.ts';
+import { SoundEngine } from '../audio/SoundEngine.ts';
 import type { LevelDefinition, PadDefinition, PassengerState, GamePhase } from '../types.ts';
 
 interface GameData {
@@ -33,6 +34,9 @@ export class GameScene extends Phaser.Scene {
   private fuelBar!: Phaser.GameObjects.Graphics;
   private messageText!: Phaser.GameObjects.Text;
 
+  private sfx!: SoundEngine;
+  private wasThrusting = false;
+
   private passengerAboard: Passenger | null = null;
   private landedPadId: string | null = null;
   private deadTimer = 0;
@@ -62,6 +66,7 @@ export class GameScene extends Phaser.Scene {
     this.levelCompleteTimer = 0;
     this.explosionTimer = 0;
     this.calloutTimer = 0;
+    this.wasThrusting = false;
     this.walls = [];
     this.pads = [];
     this.passengers = [];
@@ -72,6 +77,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
+    if (!this.sfx) this.sfx = new SoundEngine();
     this.cameras.main.setBackgroundColor(this.level.bgColor);
 
     // World graphics layer
@@ -292,6 +298,9 @@ export class GameScene extends Phaser.Scene {
   private crashTaxi() {
     this.phase = 'dead';
     this.lives--;
+    this.sfx.stopThrust();
+    this.wasThrusting = false;
+    this.sfx.playCrash();
     this.taxi.sprite.setVisible(false);
     this.spawnExplosion(this.taxi.x + this.taxi.w / 2, this.taxi.y + this.taxi.h / 2);
 
@@ -361,6 +370,7 @@ export class GameScene extends Phaser.Scene {
     p.state.state = 'aboard';
     this.passengerAboard = p;
     this.score += SCORE_PICKUP;
+    this.sfx.playBoard();
     this.hideCallout();
   }
 
@@ -371,8 +381,11 @@ export class GameScene extends Phaser.Scene {
 
     if (this.deliveredCount >= this.totalPassengers) {
       this.phase = 'levelcomplete';
+      this.sfx.playLevelComplete();
       this.showMessage('LEVEL COMPLETE!', C64.LIGHT_GREEN);
       this.levelCompleteTimer = 2500;
+    } else {
+      this.sfx.playDeliver();
     }
   }
 
@@ -395,6 +408,12 @@ export class GameScene extends Phaser.Scene {
     // Taxi physics
     this.taxi.update(dt, this.cursors, this.thrustKey);
 
+    // Thrust sound — start/stop as the key is held/released
+    const thrusting = (this.cursors.up.isDown || this.thrustKey.isDown) && !this.taxi.isLanded && this.taxi.fuel > 0;
+    if (thrusting && !this.wasThrusting) this.sfx.startThrust();
+    if (!thrusting && this.wasThrusting)  this.sfx.stopThrust();
+    this.wasThrusting = thrusting;
+
     // Lift off only on a fresh UP/SPACE press — not a held key from braking
     if (this.taxi.isLanded) {
       const K = Phaser.Input.Keyboard;
@@ -416,6 +435,9 @@ export class GameScene extends Phaser.Scene {
         if (this.taxi.checkSafeLanding()) {
           const pad = this.pads.find(p => p.def.id === padId)!;
           this.taxi.y = pad.rect.y - this.taxi.h;
+          this.sfx.stopThrust();
+          this.wasThrusting = false;
+          this.sfx.playLand();
           this.handleLanding(padId);
         } else {
           this.crashTaxi();
@@ -428,11 +450,6 @@ export class GameScene extends Phaser.Scene {
         this.crashTaxi();
         return;
       }
-    }
-
-    // Fuel empty → crash
-    if (this.taxi.fuel <= 0 && !this.taxi.isLanded) {
-      // Grace: just cut thrust but gravity still applies
     }
 
     // Passengers: boarding animation
@@ -448,7 +465,6 @@ export class GameScene extends Phaser.Scene {
           const done = p.updateAlighting(pad.rect.x, pad.rect.y - 2, dt);
           if (done) {
             this.finishAlighting();
-            // Remove from array after full alighting
             this.passengers = this.passengers.filter(ps => ps !== p);
           }
         }

@@ -27,13 +27,13 @@ export const SCALE = 2;
 export const TILE = 8;
 
 // Physics
-export const GRAVITY = 120;          // pixels/s²
-export const THRUST = 260;           // pixels/s² upward
-export const LATERAL_THRUST = 200;   // pixels/s²
-export const MAX_SPEED_X = 160;
-export const MAX_SPEED_Y = 180;
-export const SAFE_LAND_VY = 80;      // max vertical speed for safe landing
-export const SAFE_LAND_VX = 60;      // max horizontal speed for safe landing
+export const GRAVITY = 70;           // pixels/s²
+export const THRUST = 280;           // pixels/s² upward
+export const LATERAL_THRUST = 180;   // pixels/s²
+export const MAX_SPEED_X = 140;
+export const MAX_SPEED_Y = 160;
+export const SAFE_LAND_VY = 110;     // max vertical speed for safe landing
+export const SAFE_LAND_VX = 90;      // max horizontal speed for safe landing
 
 // Fuel
 export const FUEL_MAX = 999;

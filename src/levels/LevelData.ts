@@ -9,87 +9,42 @@ function wall(x: number, y: number, w: number, h: number, color: number) {
   return { x: x * TILE, y: y * TILE, width: w * TILE, height: h * TILE, color };
 }
 
-// ── Level 1: "Pool Level" ─────────────────────────────────────────────────────
+// ── Level 1: "Open Sky" — wide-open beginner level ───────────────────────────
 const level1: LevelDefinition = {
   id: 1,
-  name: 'Pool Level',
+  name: 'Open Sky',
   bgColor: C64.BLACK,
-  taxiStart: { x: 1 * TILE + 4, y: 8 * TILE - TILE * 2 },
+  // Start on H pad: H is at tile y=16, so top of ledge is pixel 128.
+  // Taxi height = 2 tiles = 16px, so taxi.y = 128 - 16 = 112.
+  taxiStart: { x: 3 * TILE, y: 16 * TILE - 2 * TILE },
   walls: [
-    // Ceiling
-    wall(0, 0, TW, 1, C64.GREEN),
-    // Floor
+    // Border
+    wall(0, 0, TW, 1,  C64.GREEN),
     wall(0, TH - 1, TW, 1, C64.GREEN),
-    // Left wall
-    wall(0, 0, 1, TH, C64.GREEN),
-    // Right wall
+    wall(0, 0, 1, TH,  C64.GREEN),
     wall(TW - 1, 0, 1, TH, C64.GREEN),
 
-    // Interior platforms
-    // Left column structure
-    wall(4, 1, 1, 8, C64.GREEN),
-    wall(1, 8, 4, 1, C64.GREEN),
+    // H pad ledge — left side, mid-height (wide, attached to left wall)
+    wall(1, 16, 8, 2, C64.GREEN),
 
-    // Middle-left ledges
-    wall(8, 4, 1, 10, C64.GREEN),
-    wall(5, 10, 4, 1, C64.GREEN),
+    // Pad 1 ledge — right side, lower
+    wall(38, 22, 9, 2, C64.GREEN),
 
-    // Center column
-    wall(14, 1, 1, 6, C64.GREEN),
-    wall(11, 6, 4, 1, C64.GREEN),
+    // Pad 2 ledge — centre-right, high
+    wall(24, 9, 9, 2, C64.GREEN),
 
-    // Right-center
-    wall(20, 4, 1, 8, C64.GREEN),
-    wall(17, 10, 4, 1, C64.GREEN),
-
-    // Right structure
-    wall(26, 1, 1, 6, C64.GREEN),
-    wall(22, 6, 5, 1, C64.GREEN),
-
-    // Far right
-    wall(32, 4, 1, 10, C64.GREEN),
-    wall(28, 12, 5, 1, C64.GREEN),
-
-    // Right wall structure
-    wall(38, 1, 1, 8, C64.GREEN),
-    wall(34, 8, 5, 1, C64.GREEN),
-
-    // Far right ledge
-    wall(44, 4, 1, 8, C64.GREEN),
-    wall(39, 10, 6, 1, C64.GREEN),
-
-    // Bottom platforms
-    wall(4, 18, 6, 1, C64.LIGHT_GREEN),
-    wall(12, 22, 8, 1, C64.LIGHT_GREEN),
-    wall(22, 18, 6, 1, C64.LIGHT_GREEN),
-    wall(32, 22, 8, 1, C64.LIGHT_GREEN),
-
-    // Pool walls (lower section)
-    wall(1, 14, 3, 10, C64.BLUE),
-    wall(8, 18, 3, 6, C64.BLUE),
-    wall(15, 14, 3, 10, C64.BLUE),
-    wall(22, 18, 3, 6, C64.BLUE),
-    wall(29, 14, 3, 10, C64.BLUE),
-    wall(36, 18, 3, 6, C64.BLUE),
-    wall(43, 14, 3, 10, C64.BLUE),
+    // Pad 3 ledge — centre-left, low
+    wall(13, 25, 9, 2, C64.GREEN),
   ],
   pads: [
-    { id: 'H', x: 1,  y: 8,  width: 4 },
-    { id: '1', x: 5,  y: 10, width: 3 },
-    { id: '2', x: 11, y: 6,  width: 3 },
-    { id: '3', x: 17, y: 10, width: 3 },
-    { id: '4', x: 22, y: 6,  width: 4 },
-    { id: '5', x: 28, y: 12, width: 4 },
-    { id: '6', x: 34, y: 8,  width: 4 },
-    { id: '7', x: 39, y: 10, width: 5 },
-    { id: '8', x: 4,  y: 18, width: 6 },
-    { id: '9', x: 22, y: 18, width: 6 },
+    { id: 'H', x: 1,  y: 16, width: 7 },
+    { id: '1', x: 38, y: 22, width: 8 },
+    { id: '2', x: 24, y: 9,  width: 8 },
+    { id: '3', x: 13, y: 25, width: 8 },
   ],
   passengers: [
-    { padId: '1', destPadId: '7' },
-    { padId: '3', destPadId: 'H' },
-    { padId: '5', destPadId: '2' },
-    { padId: '8', destPadId: '9' },
+    { padId: '1', destPadId: 'H' },
+    { padId: '2', destPadId: '3' },
   ],
 };
 

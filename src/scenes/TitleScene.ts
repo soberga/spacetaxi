@@ -58,19 +58,17 @@ export class TitleScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Blinking press-start
-    this.pressText = this.add.text(cx, 258, 'PRESS SPACE TO START', {
+    this.pressText = this.add.text(cx, 258, 'SPACE / TAP TO START', {
       fontFamily: 'monospace',
       fontSize: '9px',
       color: '#' + C64.WHITE.toString(16).padStart(6, '0'),
     }).setOrigin(0.5);
 
     // Input
-    this.input.keyboard!.once('keydown-SPACE', () => {
-      this.scene.start('Game', { level: 1, score: 0, lives: 3, fuel: 999 });
-    });
-    this.input.keyboard!.once('keydown-ENTER', () => {
-      this.scene.start('Game', { level: 1, score: 0, lives: 3, fuel: 999 });
-    });
+    const startGame = () => this.scene.start('Game', { level: 1, score: 0, lives: 3, fuel: 999 });
+    this.input.keyboard!.once('keydown-SPACE', startGame);
+    this.input.keyboard!.once('keydown-ENTER', startGame);
+    this.input.once('pointerdown', startGame);
   }
 
   private drawTitleTaxi(x: number, y: number) {

@@ -39,3 +39,9 @@ export interface PassengerState {
 }
 
 export type GamePhase = 'playing' | 'dead' | 'levelcomplete' | 'gameover';
+
+export interface VirtualInput {
+  left: boolean;
+  right: boolean;
+  thrust: boolean;
+}

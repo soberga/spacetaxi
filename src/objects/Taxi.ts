@@ -4,6 +4,7 @@ import {
   MAX_SPEED_X, MAX_SPEED_Y, FUEL_THRUST_RATE,
   SAFE_LAND_VY, SAFE_LAND_VX,
 } from '../constants.ts';
+import type { VirtualInput } from '../types.ts';
 
 export class Taxi {
   readonly sprite: Phaser.GameObjects.Graphics;
@@ -86,7 +87,7 @@ export class Taxi {
     return Math.abs(this.vy) <= SAFE_LAND_VY && Math.abs(this.vx) <= SAFE_LAND_VX;
   }
 
-  update(dt: number, cursors: Phaser.Types.Input.Keyboard.CursorKeys, thrustKey: Phaser.Input.Keyboard.Key) {
+  update(dt: number, cursors: Phaser.Types.Input.Keyboard.CursorKeys, thrustKey: Phaser.Input.Keyboard.Key, virtual?: VirtualInput) {
     if (this.isLanded) {
       this.vx = 0;
       this.vy = 0;
@@ -96,20 +97,24 @@ export class Taxi {
 
     let thrusting = false;
 
-    // Vertical thrust (Up or Space)
-    if ((cursors.up.isDown || thrustKey.isDown) && this.fuel > 0) {
+    const upDown    = cursors.up.isDown    || thrustKey.isDown || (virtual?.thrust ?? false);
+    const leftDown  = cursors.left.isDown  || (virtual?.left   ?? false);
+    const rightDown = cursors.right.isDown || (virtual?.right  ?? false);
+
+    // Vertical thrust (Up or Space or touch thrust)
+    if (upDown && this.fuel > 0) {
       this.vy -= THRUST * dt;
       this.fuel = Math.max(0, this.fuel - FUEL_THRUST_RATE * dt);
       thrusting = true;
     }
 
     // Lateral thrust
-    if (cursors.left.isDown && this.fuel > 0) {
+    if (leftDown && this.fuel > 0) {
       this.vx -= LATERAL_THRUST * dt;
       this.fuel = Math.max(0, this.fuel - FUEL_THRUST_RATE * 0.5 * dt);
       this.facingRight = false;
     }
-    if (cursors.right.isDown && this.fuel > 0) {
+    if (rightDown && this.fuel > 0) {
       this.vx += LATERAL_THRUST * dt;
       this.fuel = Math.max(0, this.fuel - FUEL_THRUST_RATE * 0.5 * dt);
       this.facingRight = true;

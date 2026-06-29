@@ -4,6 +4,7 @@ import { LEVELS } from '../levels/LevelData.ts';
 import { Taxi } from '../objects/Taxi.ts';
 import { Passenger } from '../objects/Passenger.ts';
 import { SoundEngine } from '../audio/SoundEngine.ts';
+import { TouchControls } from '../input/TouchControls.ts';
 import type { LevelDefinition, PadDefinition, PassengerState, GamePhase } from '../types.ts';
 
 interface GameData {
@@ -35,6 +36,8 @@ export class GameScene extends Phaser.Scene {
   private messageText!: Phaser.GameObjects.Text;
 
   private sfx!: SoundEngine;
+  private touch!: TouchControls;
+  private prevTouchThrust = false;
   private wasThrusting = false;
 
   private passengerAboard: Passenger | null = null;
@@ -104,6 +107,7 @@ export class GameScene extends Phaser.Scene {
     // Input
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.thrustKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.touch = new TouchControls(this);
 
     // 1–6 jump directly to that level (dev shortcut)
     const KC = Phaser.Input.Keyboard.KeyCodes;
@@ -414,19 +418,23 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updatePlaying(dt: number) {
-    // Taxi physics
-    this.taxi.update(dt, this.cursors, this.thrustKey);
+    // Update touch button states
+    this.touch.update();
 
-    // Thrust sound — start/stop as the key is held/released
-    const thrusting = (this.cursors.up.isDown || this.thrustKey.isDown) && !this.taxi.isLanded && this.taxi.fuel > 0;
+    // Taxi physics
+    this.taxi.update(dt, this.cursors, this.thrustKey, this.touch.input);
+
+    // Thrust sound — start/stop as controls are held/released
+    const thrusting = (this.cursors.up.isDown || this.thrustKey.isDown || this.touch.input.thrust) && !this.taxi.isLanded && this.taxi.fuel > 0;
     if (thrusting && !this.wasThrusting) this.sfx.startThrust();
     if (!thrusting && this.wasThrusting)  this.sfx.stopThrust();
     this.wasThrusting = thrusting;
 
-    // Lift off only on a fresh UP/SPACE press — not a held key from braking
+    // Lift off only on a fresh press — not a held key from braking
     if (this.taxi.isLanded) {
       const K = Phaser.Input.Keyboard;
-      const liftOff = K.JustDown(this.cursors.up) || K.JustDown(this.thrustKey);
+      const touchJustDown = this.touch.input.thrust && !this.prevTouchThrust;
+      const liftOff = K.JustDown(this.cursors.up) || K.JustDown(this.thrustKey) || touchJustDown;
       if (liftOff) {
         this.taxi.isLanded = false;
         this.taxi.vy = -15;
@@ -434,6 +442,7 @@ export class GameScene extends Phaser.Scene {
         this.hideCallout();
       }
     }
+    this.prevTouchThrust = this.touch.input.thrust;
 
     if (!this.taxi.isLanded) {
       // Landing check runs BEFORE wall collision: the pad surface and its

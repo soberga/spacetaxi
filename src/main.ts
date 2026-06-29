@@ -16,6 +16,9 @@ const config: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
     antialias: false,
   },
+  input: {
+    keyboard: { target: window },
+  },
   parent: document.body,
 };
 

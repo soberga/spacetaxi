@@ -274,7 +274,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private checkPadLanding(): string | null {
-    if (this.taxi.vy < 0) return null; // ascending
+    if (this.taxi.vy < 0) return null; // ascending — can't land
 
     const lr = this.taxi.getLandingRect();
 
@@ -399,23 +399,19 @@ export class GameScene extends Phaser.Scene {
                       this.cursors.left.isDown || this.cursors.right.isDown;
       if (liftOff) {
         this.taxi.isLanded = false;
+        this.taxi.vy = -15; // kick upward so taxi clears the pad surface immediately
         this.landedPadId = null;
         this.hideCallout();
       }
     }
 
     if (!this.taxi.isLanded) {
-      // Wall collision → crash
-      if (this.resolveWallCollisions()) {
-        this.crashTaxi();
-        return;
-      }
-
-      // Landing check
+      // Landing check runs BEFORE wall collision: the pad surface and its
+      // supporting ledge share the same y, so a top-down approach triggers
+      // both. Landing must win so the taxi snaps cleanly instead of crashing.
       const padId = this.checkPadLanding();
       if (padId !== null) {
         if (this.taxi.checkSafeLanding()) {
-          // Snap to pad surface
           const pad = this.pads.find(p => p.def.id === padId)!;
           this.taxi.y = pad.rect.y - this.taxi.h;
           this.handleLanding(padId);
@@ -423,6 +419,12 @@ export class GameScene extends Phaser.Scene {
           this.crashTaxi();
           return;
         }
+      }
+
+      // Wall collision only checked when not on a pad
+      if (!this.taxi.isLanded && this.resolveWallCollisions()) {
+        this.crashTaxi();
+        return;
       }
     }
 

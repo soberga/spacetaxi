@@ -2,6 +2,8 @@
 
 A browser-based recreation of the 1984 Commodore 64 game by Muse Software.
 
+> Entirely written by [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) via [Claude Code](https://claude.ai/code) — including all game logic, physics, level design, and sound. No code was written by hand.
+
 ## Play
 
 Open `dist/index.html` in any modern browser — no server required.
@@ -48,6 +50,12 @@ Land on a pad to pick up a waiting passenger, then deliver them to their destina
 - All graphics drawn via Phaser `Graphics` objects — no image assets
 - Procedural sound via Web Audio API — no audio files
 - Single-file HTML build via `vite-plugin-singlefile`
+
+## Credits
+
+Original game: Space Taxi (1984) by Muse Software, designed by Joseph Orr.
+
+This recreation was generated entirely by **Claude Sonnet 4.6** (model ID `claude-sonnet-4-6`), Anthropic's AI assistant, using the **Claude Code** CLI. The full game — architecture, physics engine, collision system, level design, sound engine, and tooling — was written through a conversational session with no hand-written code.
 
 ## Adding a level
 

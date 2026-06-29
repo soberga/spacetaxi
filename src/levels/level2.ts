@@ -17,7 +17,6 @@ const level2: LevelDefinition = {
     wall(1,  25, 10, 2, C64.BROWN),  // 1  — left low
     wall(36,  8, 11, 2, C64.BROWN),  // 2  — right high
     wall(36, 21, 11, 2, C64.BROWN),  // 3  — right mid
-    wall(17, 17, 14, 2, C64.BROWN),  // 4  — centre float
     wall(14, 28, 18, 2, C64.BROWN),  // 5  — centre-low float
   ],
   pads: [
@@ -25,13 +24,11 @@ const level2: LevelDefinition = {
     { id: '1', x: 1,  y: 25, width: 9  },
     { id: '2', x: 36, y: 8,  width: 10 },
     { id: '3', x: 36, y: 21, width: 10 },
-    { id: '4', x: 17, y: 17, width: 13 },
     { id: '5', x: 14, y: 28, width: 17 },
   ],
   passengers: [
     { padId: '2', destPadId: 'H' },
     { padId: '1', destPadId: '3' },
-    { padId: '4', destPadId: '5' },
   ],
 };
 
